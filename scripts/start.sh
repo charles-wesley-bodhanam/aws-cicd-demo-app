@@ -9,10 +9,10 @@ IMAGE_TAG=latest
 echo "Logging in to ECR..."
 aws ecr get-login-password --region $AWS_REGION | docker login \
   --username AWS \
-  --password-stdin ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+  --password-stdin ${825765423621}.dkr.ecr.${AWS_REGION}.amazonaws.com
 
 echo "Pulling Docker image..."
-docker pull ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}
+docker pull ${825765423621}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}
 
 echo "Stopping old container if exists..."
 docker stop aws-cicd-app || true
@@ -22,5 +22,5 @@ echo "Starting new container..."
 docker run -d \
   --name aws-cicd-app \
   -p 80:80 \
-  ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}
+  ${825765423621}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}
 

@@ -1,8 +1,26 @@
 #!/bin/bash
-aws ecr get-login-password --region us-east-1 ^
-| docker login --username AWS --password-stdin 825765423621.dkr.ecr.us-east-1.amazonaws.com
+set -e
 
-docker pull 825765423621.dkr.ecr.us-east-1.amazonaws.com/aws-cicd-demo-app:latest
+AWS_REGION=us-east-1
+ACCOUNT_ID=825765423621
+ECR_REPO=aws-cicd-demo
+IMAGE_TAG=latest
 
-docker run -d --name aws-cicd-app -p 80:3000 ^
-825765423621.dkr.ecr.us-east-1.amazonaws.com/aws-cicd-demo-app:latest
+echo "Logging in to ECR..."
+aws ecr get-login-password --region $AWS_REGION | docker login \
+  --username AWS \
+  --password-stdin ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+
+echo "Pulling Docker image..."
+docker pull ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}
+
+echo "Stopping old container if exists..."
+docker stop aws-cicd-app || true
+docker rm aws-cicd-app || true
+
+echo "Starting new container..."
+docker run -d \
+  --name aws-cicd-app \
+  -p 80:80 \
+  ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}
+

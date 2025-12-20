@@ -48,6 +48,12 @@ GitHub → AWS CodePipeline → AWS CodeBuild → Amazon ECR → AWS CodeDeploy 
 
 ---
 
+## Impact
+
+- Designed and implemented an end-to-end AWS CI/CD pipeline that automatically builds, containerizes, and deploys a Node.js application on EC2.
+- Reduced manual deployment effort by enabling fully automated builds and deployments using AWS managed services.
+- Implemented container-based deployments using Docker and Amazon ECR with secure IAM role-based access.
+
 ## Key Learnings
 
 - Implemented an automated CI/CD pipeline using AWS managed services.

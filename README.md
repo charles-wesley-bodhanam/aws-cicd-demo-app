@@ -118,5 +118,5 @@ GitHub
 
 ## Author
 
-Charles Wesley Bodhanam
-- Aspiring DevOps / AWS / Cloud Engineer
+**Charles Wesley Bodhanam**
+Aspiring DevOps / AWS / Cloud Engineer

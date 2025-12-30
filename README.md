@@ -1,12 +1,30 @@
-# AWS CI/CD Pipeline with Docker and CodeDeploy
+# AWS CI/CD Pipeline with Docker and CodeDeploy - Upgraded to Blue/Green Deployment with Zero Downtime
 
 This project demonstrates an end-to-end CI/CD pipeline implemented on AWS to automate the build, containerization, and deployment of a Node.js application on EC2.
 
 ---
 
+## Project Upgrade Summary
+
+This project was upgraded from a basic in-place deployment model to a **production-grade Blue/Green deployment architecture** to eliminate downtime and deployment risk.
+
+### Key Upgrade Highlights:
+- Migrated from in-place deployments to **AWS CodeDeploy Blue/Green deployments**
+- Implemented **zero-downtime traffic switching** using replacement EC2 instances
+- Added **automated rollback safety** for failed deployments
+- Introduced **S3-based artifact versioning** for controlled releases
+- Resolved real-world deployment failures related to lifecycle hooks and permissions
+
+---
+
 ## Architecture Overview
 
-GitHub → AWS CodePipeline → AWS CodeBuild → Amazon ECR → AWS CodeDeploy → EC2
+GitHub  
+- AWS CodePipeline  
+- AWS CodeBuild (Docker build & ECR push)  
+- Amazon ECR (Private Image Registry)  
+- AWS CodeDeploy (Blue/Green Deployment)  
+- EC2 Auto Scaling Group (Replacement Instances)
 
 ---
 
@@ -19,6 +37,26 @@ GitHub → AWS CodePipeline → AWS CodeBuild → Amazon ECR → AWS CodeDeploy 
 5. Deployment lifecycle is managed using CodeDeploy hooks:
    - ApplicationStop
    - ApplicationStart
+6. AWS CodeDeploy provisions replacement EC2 instances (Green environment).
+7. Traffic is shifted automatically after successful deployment with rollback support.
+
+---
+
+## Deployment Safety & Reliability
+
+- Zero-downtime deployments using Blue/Green strategy
+- Automatic rollback on deployment failure
+- Instance-level isolation during application updates
+- Safe termination of original instances after traffic validation
+
+---
+
+## Real-World Issues Solved
+
+- Fixed CodeDeploy lifecycle hook failures (exit code 127)
+- Resolved artifact overwrite conflicts during deployment
+- Corrected IAM role permissions for Auto Scaling and S3 access
+- Ensured idempotent cleanup scripts for repeated deployments
 
 ---
 
@@ -37,7 +75,6 @@ GitHub → AWS CodePipeline → AWS CodeBuild → Amazon ECR → AWS CodeDeploy 
 
 ## Repository Structure
 
-.
 ├── Dockerfile
 ├── buildspec.yml
 ├── appspec.yml
@@ -66,7 +103,8 @@ GitHub → AWS CodePipeline → AWS CodeBuild → Amazon ECR → AWS CodeDeploy 
 ## Notes
 
 - This project focuses on in-place deployments using AWS CodeDeploy.
-- Blue/Green deployments with ALB can be implemented as an extension.
+- Blue/Green deployments implemented using AWS CodeDeploy with traffic switching.
+- This project reflects real-world deployment challenges and solutions.
 
 ---
 

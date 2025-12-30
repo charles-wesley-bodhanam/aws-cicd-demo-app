@@ -100,10 +100,10 @@ GitHub
 
 ## Key Learnings
 
+- Used AWS CodeDeploy lifecycle hooks (BeforeInstall, AfterInstall) to safely replace containers and automate rollback on failure.
 - Designed and implemented a production-grade AWS CI/CD pipeline using managed AWS services.
 - Containerized a Node.js application using Docker and managed images in Amazon ECR (private).
 - Implemented Blue/Green deployments using AWS CodeDeploy to achieve zero-downtime releases.
-- Used CodeDeploy lifecycle hooks (BeforeInstall, AfterInstall) to safely replace containers and automate rollback on failure.
 - Debugged real-world deployment issues related to ECR authentication, shell scripting, and deployment health.
 
 ---

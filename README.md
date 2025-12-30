@@ -19,12 +19,12 @@ This project was upgraded from a basic in-place deployment model to a **producti
 
 ## Architecture Overview
 
-GitHub  
-- AWS CodePipeline  
-- AWS CodeBuild (Docker build & ECR push)  
-- Amazon ECR (Private Image Registry)  
-- AWS CodeDeploy (Blue/Green Deployment)  
-- EC2 Auto Scaling Group (Replacement Instances)
+GitHub
+- AWS CodePipeline
+- AWS CodeBuild (Docker build & ECR push)
+- Amazon ECR (Private Image Registry)
+- AWS CodeDeploy (Blue/Green deployment)
+- Amazon EC2 (Replacement instances managed by CodeDeploy)
 
 ---
 
@@ -33,12 +33,12 @@ GitHub
 1. Source code changes are pushed to GitHub.
 2. AWS CodePipeline detects the change and triggers the pipeline.
 3. AWS CodeBuild builds the Docker image using `buildspec.yml` and pushes the image to Amazon ECR (private repository).
-4. AWS CodeDeploy deploys the application to an EC2 instance using in-place deployment.
-5. Deployment lifecycle is managed using CodeDeploy hooks:
-   - ApplicationStop
-   - ApplicationStart
-6. AWS CodeDeploy provisions replacement EC2 instances (Green environment).
-7. Traffic is shifted automatically after successful deployment with rollback support.
+4. AWS CodeDeploy initiates a Blue/Green deployment and provisions replacement EC2 instances (Green environment).
+5. Application deployment is managed using CodeDeploy lifecycle hooks:
+   - BeforeInstall (cleanup of existing containers)
+   - AfterInstall (pulling image and starting new container)
+6. Traffic is shifted automatically from the old (Blue) instances to the new (Green) instances.
+7. Original instances are terminated after successful deployment, with rollback support enabled on failure.
 
 ---
 
@@ -65,8 +65,8 @@ GitHub
 - AWS CodePipeline
 - AWS CodeBuild
 - AWS CodeDeploy
-- Amazon EC2
 - Amazon ECR (Private)
+- Amazon EC2
 - Docker
 - GitHub
 - Bash scripting
@@ -79,9 +79,16 @@ GitHub
 ├── buildspec.yml
 ├── appspec.yml
 ├── scripts/
-│ ├── start.sh
-│ └── stop.sh
-└── application source code
+│   ├── cleanup.sh
+│   ├── start.sh
+│   └── stop.sh
+├── app.js
+├── package.json
+├── package-lock.json
+└── README.md
+
+- `buildspec.yml` handles Docker build and ECR push via AWS CodeBuild  
+- `appspec.yml` and `scripts/` enable Blue/Green deployments using AWS CodeDeploy lifecycle hooks
 
 ---
 
@@ -93,10 +100,11 @@ GitHub
 
 ## Key Learnings
 
-- Implemented an automated CI/CD pipeline using AWS managed services.
-- Containerized applications using Docker and managed images in Amazon ECR.
-- Worked with CodeDeploy lifecycle hooks for in-place EC2 deployments.
-- Debugged real-world issues related to ECR authentication, shell scripting, and deployment health.
+- Designed and implemented a production-grade AWS CI/CD pipeline using managed AWS services.
+- Containerized a Node.js application using Docker and managed images in Amazon ECR (private).
+- Implemented Blue/Green deployments using AWS CodeDeploy to achieve zero-downtime releases.
+- Used CodeDeploy lifecycle hooks (BeforeInstall, AfterInstall) to safely replace containers and automate rollback on failure.
+- Debugged real-world deployment issues related to ECR authentication, shell scripting, and deployment health.
 
 ---
 
